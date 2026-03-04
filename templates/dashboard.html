@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AutoHire AI — Automated Job Application Tracker Dashboard. Track, filter, and manage job postings from LinkedIn, Indeed, and Naukri.">
+    <title>AutoHire AI — Job Dashboard</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- ============================================ -->
+    <!-- Animated Background Particles -->
+    <!-- ============================================ -->
+    <div class="bg-particles" id="bgParticles"></div>
+
+    <!-- ============================================ -->
+    <!-- Navigation Bar -->
+    <!-- ============================================ -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="brand-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5"/>
+                        <path d="M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <span class="brand-name">AutoHire <span class="brand-accent">AI</span></span>
+            </div>
+            <div class="nav-actions">
+                <button class="btn btn-outline" id="btnScrape" title="Start Scraping">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12a9 9 0 11-6.219-8.56"/>
+                        <polyline points="21 3 21 9 15 9"/>
+                    </svg>
+                    Scrape Now
+                </button>
+                <button class="btn btn-primary" id="btnAddJob" title="Add Job Manually">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    Add Job
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================ -->
+    <!-- Main Content -->
+    <!-- ============================================ -->
+    <main class="main-content">
+        
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1 class="hero-title">
+                Your AI-Powered <span class="gradient-text">Job Tracker</span>
+            </h1>
+            <p class="hero-subtitle">
+                Automatically scrapes, organizes, and alerts you about the latest job opportunities 
+                from LinkedIn, Indeed & Naukri.
+            </p>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- Statistics Cards -->
+        <!-- ============================================ -->
+        <section class="stats-grid" id="statsGrid">
+            <div class="stat-card stat-total">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                        <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="statTotal">{{ stats.total_jobs }}</span>
+                    <span class="stat-label">Total Jobs</span>
+                </div>
+            </div>
+            <div class="stat-card stat-today">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="statToday">{{ stats.jobs_today }}</span>
+                    <span class="stat-label">Added Today</span>
+                </div>
+            </div>
+            <div class="stat-card stat-companies">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 21h18"/>
+                        <path d="M5 21V7l8-4v18"/>
+                        <path d="M19 21V11l-6-4"/>
+                        <path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="statCompanies">{{ stats.unique_companies }}</span>
+                    <span class="stat-label">Companies</span>
+                </div>
+            </div>
+            <div class="stat-card stat-sources">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/>
+                        <polyline points="7.5 4.21 12 6.81 16.5 4.21"/>
+                        <polyline points="7.5 19.79 7.5 14.6 3 12"/>
+                        <polyline points="21 12 16.5 14.6 16.5 19.79"/>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                        <line x1="12" y1="22.08" x2="12" y2="12"/>
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="statSources">{{ stats.by_source | length }}</span>
+                    <span class="stat-label">Sources</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- Filters Section -->
+        <!-- ============================================ -->
+        <section class="filters-section" id="filtersSection">
+            <div class="filters-header">
+                <h2 class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+                    </svg>
+                    Filter Jobs
+                </h2>
+                <span class="results-count" id="resultsCount">{{ total_results }} results</span>
+            </div>
+            <form class="filters-form" id="filterForm" method="GET" action="/">
+                <div class="filter-group">
+                    <label for="filterCompany">Company</label>
+                    <input type="text" id="filterCompany" name="company" 
+                           placeholder="e.g. Google, Microsoft..."
+                           value="{{ filters.get('company', '') }}">
+                </div>
+                <div class="filter-group">
+                    <label for="filterRole">Role</label>
+                    <input type="text" id="filterRole" name="role" 
+                           placeholder="e.g. Software Engineer..."
+                           value="{{ filters.get('role', '') }}">
+                </div>
+                <div class="filter-group">
+                    <label for="filterLocation">Location</label>
+                    <input type="text" id="filterLocation" name="location" 
+                           placeholder="e.g. Bangalore, Remote..."
+                           value="{{ filters.get('location', '') }}">
+                </div>
+                <div class="filter-group">
+                    <label for="filterSource">Source</label>
+                    <select id="filterSource" name="source">
+                        <option value="">All Sources</option>
+                        <option value="linkedin" {{ 'selected' if filters.get('source') == 'linkedin' }}>LinkedIn</option>
+                        <option value="indeed" {{ 'selected' if filters.get('source') == 'indeed' }}>Indeed</option>
+                        <option value="naukri" {{ 'selected' if filters.get('source') == 'naukri' }}>Naukri</option>
+                        <option value="manual" {{ 'selected' if filters.get('source') == 'manual' }}>Manual</option>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary btn-sm" id="btnApplyFilters">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        Apply
+                    </button>
+                    <a href="/" class="btn btn-ghost btn-sm" id="btnClearFilters">Clear</a>
+                </div>
+            </form>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- Job Listings Table -->
+        <!-- ============================================ -->
+        <section class="table-section" id="tableSection">
+            <div class="table-container">
+                <table class="jobs-table" id="jobsTable">
+                    <thead>
+                        <tr>
+                            <th class="th-title">Job Title</th>
+                            <th class="th-company">Company</th>
+                            <th class="th-location">Location</th>
+                            <th class="th-source">Source</th>
+                            <th class="th-date">Posted</th>
+                            <th class="th-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="jobsTableBody">
+                        {% if jobs %}
+                            {% for job in jobs %}
+                            <tr class="job-row" data-id="{{ job.id }}">
+                                <td class="td-title">
+                                    <a href="{{ job.job_link }}" target="_blank" rel="noopener noreferrer" class="job-link">
+                                        {{ job.job_title }}
+                                    </a>
+                                </td>
+                                <td class="td-company">
+                                    <div class="company-badge">
+                                        <span class="company-avatar">{{ job.company_name[0] | upper }}</span>
+                                        {{ job.company_name }}
+                                    </div>
+                                </td>
+                                <td class="td-location">
+                                    <span class="location-text">📍 {{ job.location }}</span>
+                                </td>
+                                <td class="td-source">
+                                    <span class="source-badge source-{{ job.source }}">
+                                        {{ job.source | title }}
+                                    </span>
+                                </td>
+                                <td class="td-date">{{ job.date_posted }}</td>
+                                <td class="td-actions">
+                                    <a href="{{ job.job_link }}" target="_blank" class="btn-action btn-apply" title="Apply">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+                                            <polyline points="15 3 21 3 21 9"/>
+                                            <line x1="10" y1="14" x2="21" y2="3"/>
+                                        </svg>
+                                    </a>
+                                    <button class="btn-action btn-delete" onclick="deleteJob({{ job.id }})" title="Remove">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="3 6 5 6 21 6"/>
+                                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr class="no-results-row">
+                                <td colspan="6">
+                                    <div class="empty-state">
+                                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4">
+                                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                                            <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>
+                                        </svg>
+                                        <h3>No jobs found</h3>
+                                        <p>Try adjusting your filters or run a new scrape to discover fresh opportunities.</p>
+                                        <button class="btn btn-primary" onclick="triggerScrape()">
+                                            🔍 Scrape Jobs Now
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ============================================ -->
+    <!-- Add Job Modal -->
+    <!-- ============================================ -->
+    <div class="modal-overlay" id="addJobModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Add Job Manually</h2>
+                <button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
+            </div>
+            <form class="modal-form" id="addJobForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="addTitle">Job Title *</label>
+                        <input type="text" id="addTitle" required placeholder="e.g. Software Engineer">
+                    </div>
+                    <div class="form-group">
+                        <label for="addCompany">Company *</label>
+                        <input type="text" id="addCompany" required placeholder="e.g. Google">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="addLocation">Location</label>
+                        <input type="text" id="addLocation" placeholder="e.g. Bangalore, India">
+                    </div>
+                    <div class="form-group">
+                        <label for="addSource">Source</label>
+                        <select id="addSource">
+                            <option value="manual">Manual Entry</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="indeed">Indeed</option>
+                            <option value="naukri">Naukri</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="addLink">Job Link *</label>
+                    <input type="url" id="addLink" required placeholder="https://...">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" id="btnCancelAdd">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btnSubmitJob">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        Add Job
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- Toast Notification -->
+    <!-- ============================================ -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ============================================ -->
+    <!-- Footer -->
+    <!-- ============================================ -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>
+                <span class="footer-brand">AutoHire AI</span> — Automated Job Application Tracker
+            </p>
+            <p class="footer-meta">
+                Scraping every {{ config.SCRAPE_INTERVAL_HOURS if config else 12 }} hours 
+                • Powered by Flask, Selenium & MySQL
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
